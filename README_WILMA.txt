@@ -1,9 +1,15 @@
 WILMA GOBOS
 Wilma Studio | https://wilmastudio.co
-Version 1.4.1 | Blender 5.2+
+Version 1.4.2 | Blender 5.2+
 
 Procedural gobo (shadow-pattern) spot lights. Everything is built from shader
 nodes, so there are no image files to manage and every pattern can be tuned.
+
+WHAT'S NEW IN 1.4.2
+- The preset browser is tidy again: presets are grouped by category, so
+  every folder (Frames, Meshwork, Botanical, Atmosphere, Graphic, Lines &
+  Shapes) stays together in the list instead of being mixed up. "Custom
+  Image" still leads the list in every category.
 
 WHAT'S NEW IN 1.4.1
 - Three-point lighting rebalanced: all three lamps use a fixed, low power of

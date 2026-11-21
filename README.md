@@ -12,7 +12,7 @@
 <p align="center">
   <a href="https://wilmastudio.co">wilmastudio.co</a>
   &nbsp;&middot;&nbsp;
-  Version 1.4.1
+  Version 1.4.2
   &nbsp;&middot;&nbsp;
   Blender 5.2+
   &nbsp;&middot;&nbsp;
@@ -71,7 +71,7 @@ blocks it).
 
 ## Install
 
-1. Download the latest `Wilma_Gobos_Blender5.2_v1.4.1.zip` from the
+1. Download the latest `Wilma_Gobos_Blender5.2_v1.4.2.zip` from the
    [Releases](../../releases) page.
 2. In Blender 5.2: **Preferences &rsaquo; Get Extensions &rsaquo; drop-down
    menu (top right) &rsaquo; Install from Disk**, then choose the ZIP.
@@ -158,6 +158,13 @@ older file is opened, preserving the input values you saved.
 
 ## Changelog
 
+### 1.4.2
+- The preset list is tidy again: presets are grouped by category (Frames,
+  Meshwork, Botanical, Atmosphere, Graphic, Lines & Shapes), each folder
+  kept together in the browser. **Custom Image** still leads the list.
+  The category list is capped at ten folders.
+- New look for the repository page.
+
 ### 1.4.1
 - Three-point lighting rebalanced: all three lamps (Key, Fill, Rim) use a
   fixed **10 W** power and the intensity is balanced through **exposure**
@@ -174,8 +181,8 @@ older file is opened, preserving the input values you saved.
   and linked to the scene automatically.
 
 ### 1.3.2
-- The preset browser now shows patterns in a varied, organic layout instead
-  of a strict grouped run. **Custom Image** still always leads.
+- The preset browser used to show patterns in a varied, organic layout;
+  since 1.4.2 it is grouped by category again (see the 1.4.2 entry).
 - Switching category now keeps your current preset when it exists in the
   new category (previously it reset every time).
 - Internal clean-ups and a wider static test pass; no workflow changes.

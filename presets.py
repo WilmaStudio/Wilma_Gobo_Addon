@@ -7,15 +7,14 @@ or "Finish.Invert" to be explicit. Angles are in degrees here.
 """
 
 import math
-import random as _random
 
 from . import patterns
 
-# Stable, deterministic shuffle of preset positions so the browser layout
-# looks organic instead of strictly grouped by category. The seed is fixed
-# so the order never jumps around between redraws or sessions. The original
-# index is still carried as the enum number, keeping identifiers stable.
-_SHUFFLE_SEED = 20240520
+# The preset browser reads as tidy folders: presets are shown grouped by
+# category (Frames, Meshwork, Botanical, Atmosphere, Graphic, Lines & Shapes)
+# in the order the categories are declared. Keep the folder list at ten or
+# fewer so the browser never becomes an endless tree. The original index is
+# still carried as the enum number, keeping identifiers stable.
 
 # (id, label, category, pattern id, values)
 PRESETS = [
@@ -167,19 +166,22 @@ CATEGORIES = [
 
 PRESET_BY_ID = {p[0]: p for p in PRESETS}
 
-# Original index of each preset, shuffled into a stable random order. The
-# browser always shows "Custom Image" first, then the presets in this order.
-_SHUFFLED_ORDER = list(range(len(PRESETS)))
-_random.Random(_SHUFFLE_SEED).shuffle(_SHUFFLED_ORDER)
+# Original index of each preset, sorted into a stable category-grouped
+# order. The browser always shows "Custom Image" first, then the presets
+# grouped by category in the order declared above. The sort is stable, so
+# presets keep their authored order inside each group.
+_GROUP_ORDER = [c[0] for c in CATEGORIES if c[0] != "ALL"]
+_GROUPED_ORDER = sorted(range(len(PRESETS)),
+                        key=lambda i: (_GROUP_ORDER.index(PRESETS[i][2]), i))
 
 
 def preset_order():
-    """Yield (original_index, preset) in a stable, randomized order.
+    """Yield (original_index, preset) in a stable, category-grouped order.
 
     The original index is kept so enum numbers stay constant; only the
     display order changes.
     """
-    for i in _SHUFFLED_ORDER:
+    for i in _GROUPED_ORDER:
         yield i, PRESETS[i]
 
 
