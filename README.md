@@ -12,7 +12,7 @@
 <p align="center">
   <a href="https://wilmastudio.co">wilmastudio.co</a>
   &nbsp;&middot;&nbsp;
-  Version 1.4.2
+  Version 1.4.3
   &nbsp;&middot;&nbsp;
   Blender 5.2+
   &nbsp;&middot;&nbsp;
@@ -71,7 +71,7 @@ blocks it).
 
 ## Install
 
-1. Download the latest `Wilma_Gobos_Blender5.2_v1.4.2.zip` from the
+1. Download the latest `Wilma_Gobos_Blender5.2_v1.4.3.zip` from the
    [Releases](../../releases) page.
 2. In Blender 5.2: **Preferences &rsaquo; Get Extensions &rsaquo; drop-down
    menu (top right) &rsaquo; Install from Disk**, then choose the ZIP.
@@ -157,6 +157,13 @@ older file is opened, preserving the input values you saved.
 ---
 
 ## Changelog
+
+### 1.4.3
+- Fixed: picking a category (folder) blanked the pattern browser &mdash; the
+  thumbnails and the pattern name disappeared. The folder switch wrote an
+  invalid value into the preset list; it now keeps the current preset when
+  the new folder also has it (and falls back to that folder's first preset
+  otherwise), without ever corrupting the list.
 
 ### 1.4.2
 - The preset list is tidy again: presets are grouped by category (Frames,

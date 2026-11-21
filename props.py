@@ -34,18 +34,39 @@ def _active_shadow(context):
 
 
 def _preset_changed(self, context):
+    if _preset_guard:
+        return  # a folder switch just moved the selection, do not apply
     if _active_shadow(context) is not None:
         bpy.ops.wilma_gobo.apply_preset(preset=self.preset)
 
 
+_preset_guard = False
+
+
 def _category_changed(self, context):
+    """Keep the current preset when it also exists in the new folder;
+    otherwise fall back to the folder's first real preset (items[0] is the
+    custom image). Browsing folders must not apply the preset, so the
+    switch goes through a guard."""
     items = preset_items(self, context)
-    ids = {it[0] for it in items}
-    if items and self.get("preset") not in ids:
-        # current preset is not in the new category: fall back to the first
-        # real preset (items[0] is the custom image). Dict assignment skips
-        # the update callback so browsing does not apply the preset.
-        self["preset"] = (items[1] if len(items) > 1 else items[0])[0]
+    if not items:
+        return
+    val = self.get("preset")
+    # Blender stores dynamic enum values as the item number (int) or the
+    # identifier (string) depending on the build - accept both here. A
+    # string-only check misread real Blender and reset on every switch.
+    known = {it[0] for it in items} | {it[4] for it in items}
+    if val is not None and val in known:
+        return
+    global _preset_guard
+    # Use the public property setter, never a raw ID-property write: raw
+    # string writes leave the enum in an invalid state, which blanked the
+    # pattern icons in the browser.
+    _preset_guard = True
+    try:
+        self.preset = (items[1] if len(items) > 1 else items[0])[0]
+    finally:
+        _preset_guard = False
 
 
 def _image_path_changed(self, context):
