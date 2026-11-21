@@ -109,7 +109,7 @@ class WG_SceneSettings(bpy.types.PropertyGroup):
         description="Path of your own image. White lets light through, black blocks it")
     target: bpy.props.PointerProperty(
         name="Target", type=bpy.types.Object, poll=_target_poll,
-        description="Object new Wilma Gobo lights follow with a Track To constraint "
+        description="Object new Wilma Gobos lights follow with a Track To constraint "
                     "(they are aimed at the 3D cursor if empty)")
     haze: bpy.props.BoolProperty(
         name="Haze", get=_get_haze, set=_set_haze,

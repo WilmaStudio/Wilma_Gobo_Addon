@@ -13,9 +13,19 @@ def _shadow(context):
     return rig.light_of(context.active_object)
 
 
+def _subject(context):
+    """The object a quick setup should be built around: the active object if
+    it is selected, otherwise the first selected object."""
+    obs = context.selected_objects
+    if not obs:
+        return None
+    act = context.active_object
+    return act if act in obs else obs[0]
+
+
 class WG_OT_add(bpy.types.Operator):
     bl_idname = "wilma_gobo.add"
-    bl_label = "Add Wilma Gobo"
+    bl_label = "Add Wilma Gobos"
     bl_description = ("Add a spot light that casts the chosen pattern, aimed at the "
                       "Target object, which it then follows (or the 3D cursor if there is none)")
     bl_options = {"REGISTER", "UNDO"}
@@ -50,6 +60,46 @@ class WG_OT_add(bpy.types.Operator):
         path = context.scene.wilma_gobo.image_path
         if path and rig.node(ob, rig.N_IMAGE).image is None:
             self.report({"WARNING"}, f"Could not load image: {path}")
+
+
+class WG_OT_three_point(bpy.types.Operator):
+    bl_idname = "wilma_gobo.three_point"
+    bl_label = "Add 3-Point Lights"
+    bl_description = ("Quick three-point lighting around the selected object: Key, Fill "
+                      "and Rim area lights that track it. Needs a selected object")
+    bl_options = {"REGISTER", "UNDO"}
+
+    @classmethod
+    def poll(cls, context):
+        return bool(context.selected_objects)
+
+    def execute(self, context):
+        if context.mode != "OBJECT":
+            bpy.ops.object.mode_set(mode="OBJECT")
+        subject = _subject(context)
+        if subject is None:
+            self.report({"WARNING"}, "Select an object to light first")
+            return {"CANCELLED"}
+        dims = max(subject.dimensions) if len(subject.dimensions) else 0.0
+        radius = max(dims * 0.5, 0.25)
+        center = subject.matrix_world.translation.copy()
+        coll = rig.wilma_collection(context)
+        created = []
+        for name, loc, energy, size in rig.three_point_layout(center, radius):
+            lamp = bpy.data.lights.new(name, "AREA")
+            lamp.energy = energy
+            lamp.size = size
+            ob = bpy.data.objects.new(name, lamp)
+            coll.objects.link(ob)
+            ob.location = loc
+            rig.set_target(ob, subject)
+            created.append(ob)
+        for o in context.selected_objects:
+            o.select_set(False)
+        for ob in created:
+            ob.select_set(True)
+        context.view_layer.objects.active = created[0]
+        return {"FINISHED"}
 
 
 class WG_OT_attach(bpy.types.Operator):
@@ -179,8 +229,9 @@ class WG_OT_select_light(bpy.types.Operator):
         return {"FINISHED"}
 
 
-CLASSES = (WG_OT_add, WG_OT_attach, WG_OT_apply_preset, WG_OT_remove,
-           WG_OT_random_seed, WG_OT_reset, WG_OT_make_unique, WG_OT_select_light)
+CLASSES = (WG_OT_add, WG_OT_three_point, WG_OT_attach, WG_OT_apply_preset,
+           WG_OT_remove, WG_OT_random_seed, WG_OT_reset, WG_OT_make_unique,
+           WG_OT_select_light)
 
 
 def register():

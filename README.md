@@ -12,7 +12,7 @@
 <p align="center">
   <a href="https://wilmastudio.co">wilmastudio.co</a>
   &nbsp;&middot;&nbsp;
-  Version 1.3.2
+  Version 1.4.0
   &nbsp;&middot;&nbsp;
   Blender 5.2+
   &nbsp;&middot;&nbsp;
@@ -46,7 +46,12 @@ blocks it).
 - **41 procedural patterns** and **128 ready-made presets**, organised into
   six categories (Frames, Meshwork, Botanical, Atmosphere, Graphic, and
   Lines &amp; Shapes) plus an always-first **Custom Image** slot.
-- **Thumbnail browser** &mdash; pick a look by eye, then press *Add Wilma Gobo*.
+- **Thumbnail browser** &mdash; pick a look by eye, then press *Add Wilma Gobos*.
+- **Clean scene organisation** &mdash; every add-on light is named `W_Gobo_01`,
+  `W_Gobo_02`, ... with its pattern plane `W_Pattern_01`, `W_Pattern_02`, ...
+  and everything lives in one shared **Wilma Gobos** collection.
+- **Quick 3-Point Lighting** &mdash; one button builds a Key / Fill / Rim trio
+  of area lights around the selected object, each one tracking it.
 - **Live target tracking** &mdash; point a light at any object and it follows
   it through a *Track To* constraint visible in the Constraints tab.
 - **Per-light settings** that are direct views onto the rig (custom
@@ -66,7 +71,7 @@ blocks it).
 
 ## Install
 
-1. Download the latest `Wilma_Gobos_Blender5.2_v1.3.2.zip` from the
+1. Download the latest `Wilma_Gobos_Blender5.2_v1.4.0.zip` from the
    [Releases](../../releases) page.
 2. In Blender 5.2: **Preferences &rsaquo; Get Extensions &rsaquo; drop-down
    menu (top right) &rsaquo; Install from Disk**, then choose the ZIP.
@@ -81,12 +86,23 @@ The add-on panel appears in the 3D Viewport sidebar (**N**) under the
 
 1. Open the sidebar (**N**) &rsaquo; **Wilma Gobos**.
 2. Pick a category and a preset (or **Custom Image** and your own file),
-   then press **Add Wilma Gobo**. Optionally set a **Target** object first
-   so the new light follows it.
-3. Tune the pattern in **Wilma Gobo Settings** and the lamp itself in
+   then press **Add Wilma Gobos**. Optionally set a **Target** object first
+   so the new light follows it. Lights land in the shared **Wilma Gobos**
+   collection as `W_Gobo_01`, `W_Gobo_02`, ... with their hidden pattern
+   planes `W_Pattern_01`, `W_Pattern_02`, ...
+3. Tune the pattern in **Wilma Gobos Settings** and the lamp itself in
    **Light** (color/temperature, power, exposure, radius, soft falloff,
    custom distance, beam shape).
 4. The **Gobo** toggle turns the pattern on/off without deleting anything.
+
+### Quick 3-Point Lighting
+
+Select the object you want to light and press **Add 3-Point Lights**. You
+get three area lights &mdash; **Key** (bright, front-side), **Fill** (soft,
+opposite side) and **Rim** (behind, from above) &mdash; sized, spaced and
+powered relative to the object's bounding box, each following the object
+with a *Track To* constraint. Duplicate the setup for other subjects;
+Blender suffixes the names automatically.
 
 ### Tips
 
@@ -140,6 +156,15 @@ older file is opened, preserving the input values you saved.
 
 ## Changelog
 
+### 1.4.0
+- New **Add 3-Point Lights** button under *Add Wilma Gobos*: builds a quick
+  three-point setup around the selected object with three area lights named
+  **Key**, **Fill** and **Rim**, each tracking the object.
+- Lights created by the add-on are now named `W_Gobo_01`, `W_Gobo_02`, ...
+  and their pattern planes `W_Pattern_01`, `W_Pattern_02`, ...
+- All add-on lights live in one shared **Wilma Gobos** collection, created
+  and linked to the scene automatically.
+
 ### 1.3.2
 - The preset browser now shows patterns in a varied, organic layout instead
   of a strict grouped run. **Custom Image** still always leads.
@@ -164,7 +189,7 @@ older file is opened, preserving the input values you saved.
 
 ### 1.1.0
 - Sidebar tab and main panel named "Wilma Gobos".
-- Spot lights only; new lights named "Wilma Gobo".
+- Spot lights only.
 - 10 new procedural patterns and 32 new presets in a new "Graphic" category.
 
 ---

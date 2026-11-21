@@ -8,8 +8,9 @@ from . import patterns, presets, rig
 TAB = "Wilma Gobos"
 
 # Icons are Blender built-ins; change them here.
-ICON_ADD = "OUTLINER_OB_LIGHT"      # Add Wilma Gobo button and Add > Light entry
-ICON_SETTINGS = "TOOL_SETTINGS"     # Wilma Gobo Settings panel
+ICON_ADD = "OUTLINER_OB_LIGHT"      # Add Wilma Gobos button and Add > Light entry
+ICON_THREE_POINT = "LIGHT"          # Add 3-Point Lights button
+ICON_SETTINGS = "TOOL_SETTINGS"     # Wilma Gobos Settings panel
 
 
 def _shadow(context):
@@ -73,7 +74,10 @@ class WILMA_PT_library(WILMA_PT_base, bpy.types.Panel):
         layout.separator()
         row = layout.row()
         row.scale_y = 1.35
-        row.operator("wilma_gobo.add", text="Add Wilma Gobo", icon=ICON_ADD)
+        row.operator("wilma_gobo.add", text="Add Wilma Gobos", icon=ICON_ADD)
+        row = layout.row()
+        row.operator("wilma_gobo.three_point", text="Add 3-Point Lights",
+                     icon=ICON_THREE_POINT)
 
         # Target: edits the active shadow light (a Track To constraint, shown in
         # the Constraints tab), or the default for new lights if none is active.
@@ -98,7 +102,7 @@ class WILMA_PT_library(WILMA_PT_base, bpy.types.Panel):
 
 
 class WILMA_PT_light(WILMA_PT_base, bpy.types.Panel):
-    bl_label = "Wilma Gobo Settings"
+    bl_label = "Wilma Gobos Settings"
     bl_idname = "WILMA_PT_light"
 
     @classmethod
@@ -241,7 +245,7 @@ CLASSES = (WILMA_PT_library, WILMA_PT_light, WILMA_PT_lamp, WILMA_PT_lamp_beam,
 
 
 def draw_add_menu(self, context):
-    self.layout.operator("wilma_gobo.add", text="Wilma Gobo", icon=ICON_ADD)
+    self.layout.operator("wilma_gobo.add", text="Wilma Gobos", icon=ICON_ADD)
 
 
 def register():

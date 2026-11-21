@@ -1,9 +1,19 @@
 WILMA GOBOS
 Wilma Studio | https://wilmastudio.co
-Version 1.3.2 | Blender 5.2+
+Version 1.4.0 | Blender 5.2+
 
 Procedural gobo (shadow-pattern) spot lights. Everything is built from shader
 nodes, so there are no image files to manage and every pattern can be tuned.
+
+WHAT'S NEW IN 1.4.0
+- New "Add 3-Point Lights" button under "Add Wilma Gobos". Select an object,
+  press it and you get a quick three-point setup: three area lights named
+  Key, Fill and Rim, sized and powered to the object and each following it
+  with a Track To constraint.
+- Lights created by the add-on are named W_Gobo_01, W_Gobo_02, ... and their
+  hidden pattern planes W_Pattern_01, W_Pattern_02, ...
+- All add-on lights live in one shared "Wilma Gobos" collection, created and
+  linked to the scene automatically.
 
 WHAT'S NEW IN 1.3.2
 - The preset browser now shows the patterns in a varied, organic layout
@@ -15,13 +25,13 @@ WHAT'S NEW IN 1.3.2
 
 WHAT'S NEW IN 1.3.1
 - New collapsible "More Settings" section under every pattern's settings in
-  "Wilma Gobo Settings": Scale (size of the whole pattern), Flip (mirror) and
+  "Wilma Gobos Settings": Scale (size of the whole pattern), Flip (mirror) and
   Invert (swap light and shadow). It works for the Custom Image too.
 
 WHAT'S NEW IN 1.3.0
 - Target now follows live. Pick an object in the Target field and the light
   tracks it right away through a Track To constraint named "Wilma Target"
-  (visible in the Object Constraints tab). With a Wilma Gobo light active the
+  (visible in the Object Constraints tab). With a Wilma Gobos light active the
   field edits that light; with none active it sets the target for the next
   lights you add. The "Aim Light at Target" button is gone.
 - 6 new procedural patterns and 38 new presets:
@@ -34,18 +44,18 @@ WHAT'S NEW IN 1.3.0
 WHAT'S NEW IN 1.2.0
 - New "Custom Image" entry, always the first item of the preset browser. Pick
   it, choose an image file (white lets light through, black blocks it) and
-  press "Add Wilma Gobo". Changing the path later updates the active light.
+  press "Add Wilma Gobos". Changing the path later updates the active light.
 - New "Target" field under the Add button (see 1.3.0 for how it works now).
-- New icons for the Add Wilma Gobo button and the settings panel.
-- The panel under the Add button is now called "Wilma Gobo Settings".
+- New icons for the Add Wilma Gobos button and the settings panel.
+- The panel under the Add button is now called "Wilma Gobos Settings".
 - Removed the Tall Cacti and Dangling Vines presets.
 - Removed the Influence and Shadow sub-panels from the Light panel.
 
 WHAT'S NEW IN 1.1.0
 - Sidebar tab and main panel are named "Wilma Gobos".
 - Spot lights only. Point and Area lights were removed from the add workflow.
-- New lights are named "Wilma Gobo" in the Outliner (light object and light
-  data). The hidden pattern plane sits under it as "Wilma Gobo Pattern".
+- New lights are named W_Gobo_01, W_Gobo_02, ... in the Outliner. The hidden
+  pattern plane sits under it as W_Pattern_01, W_Pattern_02, ...
 - New collapsible "Light" panel with the same controls as the Light data tab
   (color/temperature, power, exposure, radius, soft falloff, custom distance)
   plus a Beam Shape sub-panel (spot size, blend, show cone).
@@ -60,9 +70,11 @@ WHAT'S NEW IN 1.1.0
 USAGE
 1. Open the 3D Viewport sidebar (N) > Wilma Gobos.
 2. Pick a category and a preset (or "Custom Image" and your own file), then
-   press "Add Wilma Gobo". Optionally set a Target object first.
-3. Tune the pattern in "Wilma Gobo Settings" and the light itself in "Light".
+   press "Add Wilma Gobos". Optionally set a Target object first.
+3. Tune the pattern in "Wilma Gobos Settings" and the light itself in "Light".
 4. The "Gobo" toggle turns the pattern on/off without deleting anything.
+5. Select an object and press "Add 3-Point Lights" for a quick Key / Fill /
+   Rim area-light setup around it.
 
 INSTALL
 Blender 5.2: Preferences > Get Extensions > drop-down menu > Install from

@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
-"""Wilma Gobo lights: a spot lamp with a hidden "gobo" plane in front of it.
+"""Wilma Gobos lights: a spot lamp with a hidden "gobo" plane in front of it.
 
 The plane is parented to the lamp and placed along its -Z axis by drivers
 (no Python in the expressions, so files work without the add-on). It is
@@ -7,12 +7,17 @@ invisible to the camera and to reflections; it only casts shadows, through
 a material whose transparency is the pattern. This works in both Cycles
 and EEVEE. Coloured patterns (stained glass) tint the light in Cycles.
 
+Lights created by the add-on are named W_Gobo_01, W_Gobo_02, ... and live
+in a shared "Wilma Gobos" collection; their pattern planes are named
+W_Pattern_01, W_Pattern_02, ...
+
 Custom properties on the lamp object:
     wg_distance  distance from the lamp to the plane (the "focus")
     wg_size      plane width (only used if the lamp is switched away from Spot)
 """
 
 import math
+import re
 
 import bpy
 from mathutils import Vector
@@ -24,9 +29,12 @@ MAT_TAG = "wg_shadow_material"
 DISTANCE = "wg_distance"
 SIZE = "wg_size"
 TYPE = "wg_lamp_type"  # lamp type the plane drivers were built for
-LIGHT_NAME = "Wilma Gobo"
 SPOT_MARGIN = 1.1   # the plane is a bit larger than the cone, so no light leaks
 HAZE_NODE = "Wilma Haze"
+
+LIGHT_PREFIX = "W_Gobo"       # created lights: W_Gobo_01, W_Gobo_02, ...
+PLANE_PREFIX = "W_Pattern"    # pattern planes:  W_Pattern_01, W_Pattern_02, ...
+COLLECTION_NAME = "Wilma Gobos"
 
 N_TRANSFORM, N_PATTERN, N_IMAGE, N_FINISH = "Transform", "Pattern", "Image", "Finish"
 
@@ -71,6 +79,80 @@ def current_pattern(light_ob):
     if mat is None:
         return None
     return mat.get("wg_pattern")
+
+
+# -- naming and collections ---------------------------------------------------------------
+
+
+def _next_index(prefix, names):
+    """Next free number after the highest <prefix>_NN found in names."""
+    pat = re.compile(rf"^{re.escape(prefix)}_(\d+)")
+    best = 0
+    for name in names:
+        m = pat.match(name)
+        if m:
+            best = max(best, int(m.group(1)))
+    return best + 1
+
+
+def next_light_name():
+    """W_Gobo_01, W_Gobo_02, ... skipping numbers taken by other objects."""
+    return f"{LIGHT_PREFIX}_{_next_index(LIGHT_PREFIX, bpy.data.objects.keys()):02d}"
+
+
+def next_plane_name(for_light=None):
+    """W_Pattern_01, W_Pattern_02, ... matching the light's own number when
+    the light follows the W_Gobo_NN scheme and the slot is still free."""
+    if for_light is not None:
+        m = re.match(rf"^{re.escape(LIGHT_PREFIX)}_(\d+)", for_light)
+        if m:
+            candidate = f"{PLANE_PREFIX}_{int(m.group(1)):02d}"
+            if bpy.data.objects.get(candidate) is None:
+                return candidate
+    return f"{PLANE_PREFIX}_{_next_index(PLANE_PREFIX, bpy.data.objects.keys()):02d}"
+
+
+def _collection_linked(tree, coll):
+    if tree is coll:
+        return True
+    return any(_collection_linked(child, coll) for child in tree.children)
+
+
+def wilma_collection(context):
+    """The shared "Wilma Gobos" collection every add-on light lives in.
+    Created and linked to the current scene on first use."""
+    coll = bpy.data.collections.get(COLLECTION_NAME)
+    if coll is None:
+        coll = bpy.data.collections.new(COLLECTION_NAME)
+    scene_coll = context.scene.collection
+    if not _collection_linked(scene_coll, coll):
+        scene_coll.children.link(coll)
+    return coll
+
+
+def three_point_layout(center, radius):
+    """Positions, powers and sizes of a Key / Fill / Rim area-light trio
+    around a subject of the given radius. Returns (name, location, energy,
+    size) tuples; the front of the subject is assumed to face -Y."""
+    radius = max(radius, 0.25)
+    d = max(2.0, 3.0 * radius)
+    # name, azimuth from the front axis (deg, + = left), elevation (deg),
+    # power factor relative to the key, size factor relative to the subject
+    specs = (
+        ("Key", 45.0, 35.0, 1.0, 1.2),
+        ("Fill", -55.0, 20.0, 0.35, 1.8),
+        ("Rim", 155.0, 40.0, 0.55, 0.7),
+    )
+    out = []
+    for name, az, el, power, size_f in specs:
+        azr, elr = math.radians(az), math.radians(el)
+        off = Vector((math.sin(azr) * math.cos(elr),
+                      -math.cos(azr) * math.cos(elr),
+                      math.sin(elr))) * d
+        out.append((name, center + off,
+                    1000.0 * (d / 2.0) ** 2 * power,
+                    max(0.25, radius * size_f)))
+    return out
 
 
 # -- creation ---------------------------------------------------------------------------
@@ -233,7 +315,7 @@ def attach(light_ob, pid="PANES"):
     ui = light_ob.id_properties_ui(SIZE)
     ui.update(min=0.001, soft_max=100.0, subtype="DISTANCE",
               description="Width of the shadow pattern (Sun, Area and Point lamps)")
-    name = light_ob.name + " Pattern"
+    name = next_plane_name(light_ob.name)
     plane = bpy.data.objects.new(name, _new_plane_mesh(name))
     plane[PLANE_TAG] = True
     for coll in light_ob.users_collection:
@@ -322,21 +404,22 @@ def set_target(light_ob, target):
 
 
 def create(context, pid="PANES", target=None, reach=1.0):
-    """New Wilma Gobo spot light. With a target object the lamp follows it
-    (Track To); otherwise it is aimed once at the 3D cursor. reach scales how
-    far the lamp starts from the target (big objects)."""
+    """New Wilma Gobos spot light, named W_Gobo_NN and placed in the shared
+    "Wilma Gobos" collection. With a target object the lamp follows it
+    (Track To); otherwise it is aimed once at the 3D cursor. reach scales
+    how far the lamp starts from the target (big objects)."""
     scene = context.scene
     target_ob = target
     target = Vector(target_ob.matrix_world.translation if target_ob is not None
                     else scene.cursor.location)
-    lamp = bpy.data.lights.new(LIGHT_NAME, "SPOT")
+    name = next_light_name()
+    lamp = bpy.data.lights.new(name, "SPOT")
     lamp.energy = 1500.0
     lamp.spot_size = math.radians(45.0)
     lamp.spot_blend = 0.05
     lamp.shadow_soft_size = 0.0  # sharp, like a gobo projector; raise for softer shadows
-    ob = bpy.data.objects.new(LIGHT_NAME, lamp)
-    coll = context.collection or scene.collection
-    coll.objects.link(ob)
+    ob = bpy.data.objects.new(name, lamp)
+    wilma_collection(context).objects.link(ob)
     ob.location = target + Vector((1.5, -2.5, 3.5)) * max(1.0, reach)
     context.view_layer.update()
     aim(ob, target)
