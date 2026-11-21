@@ -133,24 +133,24 @@ def wilma_collection(context):
 def three_point_layout(center, radius):
     """Positions, powers and sizes of a Key / Fill / Rim area-light trio
     around a subject of the given radius. Returns (name, location, energy,
-    size) tuples; the front of the subject is assumed to face -Y."""
+    exposure, size) tuples; the front of the subject is assumed to face -Y."""
     radius = max(radius, 0.25)
     d = max(2.0, 3.0 * radius)
     # name, azimuth from the front axis (deg, + = left), elevation (deg),
-    # power factor relative to the key, size factor relative to the subject
+    # power (W) - fixed, exposure (stops) - carries the balance,
+    # size factor relative to the subject
     specs = (
-        ("Key", 45.0, 35.0, 1.0, 1.2),
-        ("Fill", -55.0, 20.0, 0.35, 1.8),
-        ("Rim", 155.0, 40.0, 0.55, 0.7),
+        ("Key", 45.0, 35.0, 10.0, 5.0, 1.2),
+        ("Fill", -55.0, 20.0, 10.0, 3.0, 1.8),
+        ("Rim", 155.0, 40.0, 10.0, 2.0, 0.7),
     )
     out = []
-    for name, az, el, power, size_f in specs:
+    for name, az, el, energy, exposure, size_f in specs:
         azr, elr = math.radians(az), math.radians(el)
         off = Vector((math.sin(azr) * math.cos(elr),
                       -math.cos(azr) * math.cos(elr),
                       math.sin(elr))) * d
-        out.append((name, center + off,
-                    1000.0 * (d / 2.0) ** 2 * power,
+        out.append((name, center + off, energy, exposure,
                     max(0.25, radius * size_f)))
     return out
 

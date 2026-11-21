@@ -12,7 +12,7 @@
 <p align="center">
   <a href="https://wilmastudio.co">wilmastudio.co</a>
   &nbsp;&middot;&nbsp;
-  Version 1.4.0
+  Version 1.4.1
   &nbsp;&middot;&nbsp;
   Blender 5.2+
   &nbsp;&middot;&nbsp;
@@ -71,7 +71,7 @@ blocks it).
 
 ## Install
 
-1. Download the latest `Wilma_Gobos_Blender5.2_v1.4.0.zip` from the
+1. Download the latest `Wilma_Gobos_Blender5.2_v1.4.1.zip` from the
    [Releases](../../releases) page.
 2. In Blender 5.2: **Preferences &rsaquo; Get Extensions &rsaquo; drop-down
    menu (top right) &rsaquo; Install from Disk**, then choose the ZIP.
@@ -98,11 +98,13 @@ The add-on panel appears in the 3D Viewport sidebar (**N**) under the
 ### Quick 3-Point Lighting
 
 Select the object you want to light and press **Add 3-Point Lights**. You
-get three area lights &mdash; **Key** (bright, front-side), **Fill** (soft,
-opposite side) and **Rim** (behind, from above) &mdash; sized, spaced and
-powered relative to the object's bounding box, each following the object
-with a *Track To* constraint. Duplicate the setup for other subjects;
-Blender suffixes the names automatically.
+get three area lights &mdash; **Key**, **Fill** and **Rim** &mdash; placed
+around the object, each following it with a *Track To* constraint. All
+three lamps use a gentle fixed power of **10&nbsp;W**; the balance between
+them comes from **exposure**: Key **+5**, Fill **+3** and Rim **+2** stops,
+so the setup never blows out the subject. Light sizes still adapt to the
+object's bounding box. Duplicate the setup for other subjects; Blender
+suffixes the names automatically.
 
 ### Tips
 
@@ -155,6 +157,12 @@ older file is opened, preserving the input values you saved.
 ---
 
 ## Changelog
+
+### 1.4.1
+- Three-point lighting rebalanced: all three lamps (Key, Fill, Rim) use a
+  fixed **10 W** power and the intensity is balanced through **exposure**
+  instead &mdash; Key +5, Fill +3, Rim +2 stops. The rig no longer blows out
+  the subject regardless of its size.
 
 ### 1.4.0
 - New **Add 3-Point Lights** button under *Add Wilma Gobos*: builds a quick

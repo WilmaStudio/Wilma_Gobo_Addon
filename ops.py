@@ -85,9 +85,10 @@ class WG_OT_three_point(bpy.types.Operator):
         center = subject.matrix_world.translation.copy()
         coll = rig.wilma_collection(context)
         created = []
-        for name, loc, energy, size in rig.three_point_layout(center, radius):
+        for name, loc, energy, exposure, size in rig.three_point_layout(center, radius):
             lamp = bpy.data.lights.new(name, "AREA")
             lamp.energy = energy
+            lamp.exposure = exposure
             lamp.size = size
             ob = bpy.data.objects.new(name, lamp)
             coll.objects.link(ob)

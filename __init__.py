@@ -4,7 +4,7 @@
 bl_info = {
     "name": "Wilma Gobos",
     "author": "Wilma Studio",
-    "version": (1, 4, 0),
+    "version": (1, 4, 1),
     "blender": (5, 2, 0),
     "location": "View3D > Sidebar > Wilma Gobos",
     "description": "Procedural gobo spot lights with pattern thumbnails",
